@@ -1,8 +1,8 @@
 git clone https://github.com/davidmaimoun/RedFoxPentaist.git
 
-cd RedFoxPentaist-master
+cd RedFoxPentaist
 
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate   # Linux / macOS
 .venv\Scripts\activate      # Windows
 
