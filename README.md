@@ -1,6 +1,6 @@
 git clone https://github.com/davidmaimoun/RedFoxPentaist.git
 
-cd RedFoxPentaist-mater
+cd RedFoxPentaist-master
 
 python -m venv .venv
 source .venv/bin/activate   # Linux / macOS
