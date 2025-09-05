@@ -1,5 +1,6 @@
 from ollama import chat
 
+
 def ask_ai(prompt: str, model: str = "gemma3:latest", temperature=0.1) -> str:
     """
     Send a prompt to Ollama and return the AI response formatted as rich HTML.

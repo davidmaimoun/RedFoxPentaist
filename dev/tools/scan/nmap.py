@@ -9,10 +9,7 @@ def run_nmap(target: str, user_id='1') -> str:
     os.makedirs(user_dir, exist_ok=True)
     output_file = os.path.join(user_dir, "nmap.txt")
 
-    cmd = [
-        "docker", "run", "--rm",
-        "instrumentisto/nmap", "-sV", "-Pn", "-A", target
-    ]
+    cmd = ["nmap", "-sV", "-Pn", "-A", target]
 
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, check=True)
