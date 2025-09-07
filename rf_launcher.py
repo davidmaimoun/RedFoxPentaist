@@ -34,7 +34,7 @@ def main():
         target['ip'] = ip 
     else:
         exit("Need a valid IP")
-        
+
     if input_file:
         target['file'] = input_file
     if username:
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     --------------------------------------------------------
     🏁  RedFox Pentais ended !\n
     ⏱  Elapsed time: {math.floor(elapsed_minutes)} minutes
-    --------------------------------------------------------/n
+    --------------------------------------------------------\n
     """)
 
 

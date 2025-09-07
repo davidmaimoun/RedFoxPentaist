@@ -63,17 +63,18 @@ def run_red_fox_pentaist(target: str, out_dir, model='gemma3', is_docker=True):
                 try:
                     log_msg(f"> Running {tool_name}", LogType.INFO)
 
-                    output = tool_func(target)
+                    output = tool_func(ip)
 
                     if output:
-                        save_outputs(
-                            os.path.join(out_dir, tool_name), output)
+                        log_msg(f"✔️  {tool_name} ran sccessfully", LogType.INFO)
+
+                        save_outputs(os.path.join(out_dir, tool_name), output)
                         scan_ports_outputs[port] = { 'tool': tool_name, 'output': output }
                     else:
-                        log_msg(f"⚠️ {tool_name} did not return any result", LogType.IMPORTANT)
+                        log_msg(f"⚠️  {tool_name} did not return any result", LogType.IMPORTANT)
 
                 except Exception as e:
-                    log_msg(f"💢 Error running {tool_name}: {e}", LogType.ERROR)
+                    log_msg(f"💢  Error running {tool_name}: {e}", LogType.ERROR)
         
     if model == None:
         log_msg("No models AI wanted", LogType.INFO)
@@ -124,13 +125,10 @@ def run_red_fox_pentaist(target: str, out_dir, model='gemma3', is_docker=True):
             Expected outcome, suggested tools (<code>tool</code>), risk/priority rating.</li>
             </ol>
 
-            <h2>Next Steps</h2>
+            <h3>Next Steps</h3>
             <p>One-paragraph guidance.</p>
-        """
-            
-        prompt += "\n--- Summary Tab ---\n"
-        prompt += """
-            <h2>Summary Tab</h2>
+                   
+            <h3>Summary Tab</h3>
             Add here a nice table <table> to sum up the analysis, with columns:\n
             1. 'Port' for the port scanned, 
             2. 'Tool' for the tool that ran successfully, 
@@ -164,9 +162,9 @@ def run_red_fox_pentaist(target: str, out_dir, model='gemma3', is_docker=True):
         report_saved = save_outputs(os.path.join(out_dir, 'pentest_report'), ai_report, 'html')
 
         if 'path' in report_saved:
-            log_msg(f"Report successfully saved in {report_saved['path']}", LogType.INFO)
+            log_msg(f"✔️ Report successfully saved in {report_saved['path']}", LogType.INFO)
         else:
-            log_msg("Report cannot be saved" , LogType.ERROR)
+            log_msg("💢  Report cannot be saved" , LogType.ERROR)
 
         # return ai_answer.replace("```html", "").replace("```", "").strip()   
     

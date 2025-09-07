@@ -73,7 +73,6 @@ def html_start(title):
             .content {
                 flex: 1;
                 background: white;
-                overflow-x: auto;   
             }
         </style>
         </head>

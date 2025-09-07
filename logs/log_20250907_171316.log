@@ -1,0 +1,19 @@
+2025-09-07 17:13:16,423 - INFO - 
+
+    ----------------------------------
+            🦊 Pentest Mode 🦊 
+    ----------------------------------
+
+    
+2025-09-07 17:13:16,426 - INFO - > Reading Nmap results from MyRedFoxProject/nmap.txt
+2025-09-07 17:13:16,428 - INFO - Port 21/tcp open - FTP detected!
+
+2025-09-07 17:13:16,428 - INFO - > Running hydra
+2025-09-07 17:13:18,629 - INFO - ⚠️ hydra did not return any result
+2025-09-07 17:13:18,631 - INFO - Port 80/tcp open - HTTP 80 detected!
+
+2025-09-07 17:13:18,631 - INFO - > Running gobuster
+2025-09-07 17:13:19,568 - INFO - 
+------------
+🧐 Asking RedFox for guidance...
+
