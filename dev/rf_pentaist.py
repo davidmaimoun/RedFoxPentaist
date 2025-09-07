@@ -18,16 +18,30 @@ def run_red_fox_pentaist(target: str, out_dir, model='gemma3', is_docker=True):
     os.makedirs(out_dir, exist_ok=True)
 
     ip = target["ip"]
+    input_file = None
 
-    try:
-        log_msg(f"> Running Nmap", LogType.INFO)
-        nmap_output = run_nmap(ip, is_docker)
-   
-        save_outputs(os.path.join(out_dir, "nmap"), nmap_output)
-    except Exception as e:
-        log_msg(f"[Pentest] Nmap failed, Bye Bye: {e}", LogType.ERROR)
-        exit(1)
+    if 'file' in target:
+        input_file = target['file']
 
+    if not input_file:
+        try:
+            log_msg(f"> Running Nmap", LogType.INFO)
+            nmap_output = run_nmap(ip, is_docker)
+    
+            save_outputs(os.path.join(out_dir, "nmap"), nmap_output)
+        except Exception as e:
+            log_msg(f"[Pentest] Nmap failed, Bye Bye: {e}", LogType.ERROR)
+            exit(1)
+
+    else:
+        try:
+            log_msg(f"> Reading Nmap results from {input_file}", LogType.INFO)
+            with open(input_file, "r") as f:
+                nmap_output = f.read()
+
+        except Exception as e:
+            log_msg(f"[Pentest] Failed to read {input_file}: {e}", LogType.ERROR)
+            exit(1)
     
     scan_ports_outputs = {}
 

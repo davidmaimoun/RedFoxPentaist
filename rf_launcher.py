@@ -10,7 +10,8 @@ warnings.filterwarnings("ignore", category=RuntimeWarning, module="trio")
 
 def main():
     parser = argparse.ArgumentParser(description="RedFox Pentest Launcher")
-    parser.add_argument("--ip",     required=False, help="Enter the ip address of the target (ex: 10.10.10.10)")
+    parser.add_argument("--ip",     required=True, help="Enter the ip address of the target (ex: 10.10.10.10)")
+    parser.add_argument("--input",  required=False, help="Enter the nmap file for starter")
     parser.add_argument("--model",  required=False, help="Choose your AI model")
     parser.add_argument("--mode",   default='pt', help="Choose your attack mode [pt(default), pe]")
     parser.add_argument("--connection",  required=False, help="Choose your connection protocol [ssh]")
@@ -21,6 +22,7 @@ def main():
 
     attack_mode = args.mode
     ip = args.ip
+    input_file = args.input
     connection = args.connection
     model = args.model
     output = args.output
@@ -30,6 +32,11 @@ def main():
 
     if ip:
         target['ip'] = ip 
+    else:
+        exit("Need a valid IP")
+        
+    if input_file:
+        target['file'] = input_file
     if username:
         target['username'] = username
     if password:

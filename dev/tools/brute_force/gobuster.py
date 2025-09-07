@@ -12,7 +12,7 @@ def run_gobuster(target, is_docker=True, port='80', wordlist_file="common.txt"):
         if is_docker:
             cmd = [
                 "docker", "run", "--rm",
-                "-v", f"{wordlist_dir}:/wordlists",   
+                "-v", f"{wordlist_dir}:/wordlists/{wordlist_file}",   
                 "oj/gobuster",
                 "dir", "-u", f"{target}:{port}",
                 "-w", f"/wordlists/{wordlist_file}"  
