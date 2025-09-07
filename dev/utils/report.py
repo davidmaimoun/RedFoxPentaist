@@ -15,6 +15,7 @@ def html_start(title):
             body {
                 font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
                 padding-top: 20px; 
+                padding-bottom: 20px; 
                 font-size: 1.1rem;
                 margin: 0;
                 display: flex;
