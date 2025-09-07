@@ -3,14 +3,11 @@ import subprocess
 def ask_ai(model_name: str, prompt: str) -> str:
     """
     Executes a Docker Model Runner command and handles potential errors.
-
     Args:
         model_name: The name of the Docker model (e.g., "ai/gemma3").
         prompt: The text prompt for the model.
-
     Returns:
         The model's response as a string.
-
     Raises:
         subprocess.CalledProcessError: If the Docker command fails.
         subprocess.TimeoutExpired: If the command times out.
@@ -42,9 +39,9 @@ def ask_ai(model_name: str, prompt: str) -> str:
             check=True,
             capture_output=True,
             text=True,
-            timeout=180 # Set a reasonable timeout for model execution.
         )
-        print(result.stdout.strip())
+
+                    
         return result.stdout.strip()
 
     except subprocess.CalledProcessError as e:

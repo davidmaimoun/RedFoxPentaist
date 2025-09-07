@@ -1,22 +1,16 @@
 import subprocess
-import os
 
-def run_nmap(target: str, user_id='1') -> str:
+def run_nmap(target: str, is_docker=True) -> str:
     """
     Run Nmap using Docker and save output to users/<user_id>/nmap.txt
     """
-    user_dir = f"users/{user_id}"
-    os.makedirs(user_dir, exist_ok=True)
-    output_file = os.path.join(user_dir, "nmap.txt")
+    
+    if is_docker:
+        cmd = ["docker", "run", "--rm", "instrumentisto/nmap", "nmap", "-sV", "-Pn", "-A", target]
+    else:
+        cmd = ["nmap", "-sV", "-Pn", "-A", target]
 
-    cmd = ["nmap", "-sV", "-Pn", "-A", target]
+    result = subprocess.run(cmd, capture_output=True, text=True, check=True)
 
-    try:
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        with open(output_file, "w") as f:
-            f.write(result.stdout)
-        return result.stdout
-    except subprocess.CalledProcessError as e:
-        with open(output_file, "w") as f:
-            f.write(e.output or "")
-        raise RuntimeError(f"Nmap failed: {e}")
+    return result.stdout
+    

@@ -1,0 +1,5 @@
+2025-09-07 10:36:49,986 - INFO - Trying to connect via ssh (attempt 1)...
+2025-09-07 10:36:50,308 - INFO - Connected (version 2.0, client OpenSSH_8.2p1)
+2025-09-07 10:36:51,105 - INFO - Authentication (publickey) failed.
+2025-09-07 10:36:51,443 - INFO - Authentication (password) successful!
+2025-09-07 10:36:51,444 - INFO - Connected via ssh!

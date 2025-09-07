@@ -1,1 +1,4 @@
+docker model pull ai/gemma3:latest
+
 python3 rf_launcher.py --mode pe --ip 10.10.10.245 --connection ssh --username nathan --password Buck3tH4TF0RM3! --model "ai/gemma3:latest"
+python3 rf_launcher.py --mode pt --ip 10.10.10.245 --model "ai/gemma3:latest"
