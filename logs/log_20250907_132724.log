@@ -1,2 +1,0 @@
-2025-09-07 13:27:24,459 - INFO - > Running Nmap
-2025-09-07 13:27:24,460 - INFO - [Pentest] Nmap failed: expected str, bytes or os.PathLike object, not dict

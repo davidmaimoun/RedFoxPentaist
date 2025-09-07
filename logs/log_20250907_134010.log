@@ -1,9 +1,0 @@
-2025-09-07 13:40:10,429 - INFO - 
-
-    --------------------------------
-            🦊 Pentest Mode
-    --------------------------------
-
-    
-2025-09-07 13:40:10,430 - INFO - > Running Nmap
-2025-09-07 13:40:52,554 - INFO - [Pentest] Nmap failed: Command '['docker', 'run', '--rm', 'instrumentisto/nmap', 'nmap', '-sV', '-Pn', '-A', '10.10.10.245']' returned non-zero exit status 139.
