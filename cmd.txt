@@ -2,6 +2,6 @@ docker model pull ai/gemma3:latest
 
 python3 rf_launcher.py --mode pe --ip 10.10.10.245 --connection ssh --username nathan --password Buck3tH4TF0RM3! --model "ai/gemma3:latest"
 python3 rf_launcher.py --mode pt --ip 10.10.10.245 --model "ai/gemma3:latest"
-python3 rf_launcher.py --mode pt --ip 10.10.10.245 --input MyRedFoxProject/nmap.txt --model "ai/gemma3:latest"
+python3 rf_launcher.py --mode pt --ip 10.10.10.245 --input exempleProject/nmap.txt --model "ai/gemma3:latest"
 
-docker run --rm -v C:/Users/david/Desktop/david/RedFoxPentaist/dev/wordlists/common.txt oj/gobuster dir -u 10.10.10.245:80 -w /wordlists/common.txt 
+docker run --rm -v C:/Users/david/Desktop/david/RedFoxPentaist/dev/wordlists/common.txt oj/gobuster dir -u 10.10.10.245:80 -w /wordlists/common.tx

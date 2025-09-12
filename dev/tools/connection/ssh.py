@@ -17,9 +17,7 @@ def ssh_connect(user, ip, password, port=22):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())  # accept unknown keys
         ssh.connect(ip, port=port, username=user, password=password, timeout=10)
-        print(f"[+] Connected to {ip} as {user}")
         return ssh
     except Exception as e:
-        print(f"[-] SSH connection failed: {e}")
         return None
 

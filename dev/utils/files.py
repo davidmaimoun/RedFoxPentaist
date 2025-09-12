@@ -27,6 +27,7 @@ def save_outputs(file_path: str, content, type='txt') -> dict:
     """
     text = _stringify_content(content)  # must return string
     result = {}
+
     try:
         with open(f"{file_path}.{type}", "w", encoding="utf-8") as f:
             f.write(text)

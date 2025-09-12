@@ -1,3 +1,6 @@
+from datetime import datetime
+import logging
+import os
 import math
 import time
 import argparse
@@ -17,19 +20,39 @@ def main():
     parser.add_argument("--connection",  required=False, help="Choose your connection protocol [ssh]")
     parser.add_argument("--username",    required=False, help="Username for the connection (ex: foxi, aragorn ...)")
     parser.add_argument("--password",    required=False, help="Password for the connection")
-    parser.add_argument("--output", default='MyRedFoxProject', help="Choose output dir")
+    parser.add_argument("--output", default='exempleProject', help="Choose project dir")
     args = parser.parse_args()
 
+    
+    # ---------------------------
+    # Assign variables
+    # ---------------------------
     attack_mode = args.mode
     ip = args.ip
     input_file = args.input
     connection = args.connection
     model = args.model
-    output = args.output
+    output = os.path.join('projects', args.output)
     username = args.username
     password = args.password
     target = {}
 
+
+    # ---------------------------
+    # Create project directory & logs folder
+    # ---------------------------
+    logs_dir = f"{output}/logs"
+    os.makedirs(logs_dir, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_filename = f"{logs_dir}/log_{timestamp}.log"
+
+    logging.basicConfig(
+        filename=log_filename,
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+    )
+    
     if ip:
         target['ip'] = ip 
     else:
@@ -42,11 +65,13 @@ def main():
     if password:
         target['password'] = password
 
-
     if not target:
         print("No target provided")
         return
- 
+
+    # ---------------------------
+    # Run the chosen attack mode
+    # ---------------------------
     if attack_mode == 'pt':
         run_red_fox_pentaist(target=target, out_dir=output, model=model)
     elif attack_mode == 'pe':
@@ -64,10 +89,10 @@ if __name__ == "__main__":
     end = time.time()
     elapsed_minutes = (end - start) / 60
     print(f"""\n
-    --------------------------------------------------------
-    🏁  RedFox Pentais ended !\n
-    ⏱  Elapsed time: {math.floor(elapsed_minutes)} minutes
-    --------------------------------------------------------\n
+--------------------------------------------------------
+🏁  RedFox PentAIst ended !\n
+⏱  Elapsed time: {math.floor(elapsed_minutes)} minutes
+--------------------------------------------------------\n
     """)
 
 
