@@ -29,6 +29,7 @@ def run_red_fox_privesc(target: dict, protocol: str, out_dir: str, model=None):
         protocol (str): Protocol type, e.g. "ssh"
         out_dir (str): Where to save outputs
     """
+
     cmds = [
         {
             "cmd": "whoami", 
@@ -128,6 +129,12 @@ def run_red_fox_privesc(target: dict, protocol: str, out_dir: str, model=None):
 
     data = []
 
+    log_msg("""\n
+    ----------------------------------
+            🦊 Privesc Mode 🦊 
+    ----------------------------------\n
+    """)
+
     os.makedirs(out_dir, exist_ok=True)
 
     username, ip, password = target["username"], target["ip"], target["password"]
@@ -226,7 +233,7 @@ def run_red_fox_privesc(target: dict, protocol: str, out_dir: str, model=None):
 
 
         if model:
-            log_msg("Asking 🤖 AI for guidance...", LogType.ANALYZE, True)
+            log_msg("Asking 🤖 A.I. 🤖 for guidance...", LogType.ANALYZE, True)
             # Convert result text into true or false for taking ai guidance (otherwise text too long and doesnot work)
             data_ai = []
             for obj in data:
@@ -247,7 +254,7 @@ def run_red_fox_privesc(target: dict, protocol: str, out_dir: str, model=None):
 
                Format your answer as an HTML snippet with the following structure:
                 <div class=card>
-                    <h3>🤖  AI Analysis</h3>
+                    <h3>🤖  A.I. Analysis</h3>
                     <h3>Findings</h3>
                     <!-- List the key findings here -->
 

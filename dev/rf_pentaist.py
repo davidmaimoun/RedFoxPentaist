@@ -1,6 +1,7 @@
 import os
 from enum import Enum
 from dev.ai.ai_chat import ask_ai
+from dev.tools.scan.nikto import fetch_nikto_output, run_nikto
 from dev.tools.scan.web import analyze_web_pages
 from dev.utils.files import save_outputs
 from dev.tools.scan.gobuster import fetch_gobuster_output, run_gobuster
@@ -9,9 +10,11 @@ from dev.tools.scan.nmap import run_nmap
 from dev.utils.icons import Icons
 from dev.utils.logger import LogType, log_msg
 from dev.utils.report import create_report_list, create_report_list_item, create_report_paragraphe, create_report_section, create_report_subtitle, create_report_title, generate_pentest_intro, html_end, html_start
+from dev.utils.watchdog import run_with_watchdog
 
 class Tools(Enum):
     GOBUSTER        = "gobuster"
+    NIKTO           = "nikto"
     HYDRA           = "hydra"
 
 def run_red_fox_pentaist(target: str, out_dir, model='gemma3', is_docker=True):
@@ -38,7 +41,7 @@ def run_red_fox_pentaist(target: str, out_dir, model='gemma3', is_docker=True):
         except Exception as e:
             log_msg(f"Nmap failed, Bye Bye: {e}", LogType.ERROR)
             exit(1)
-
+ 
     else:
         try:
             log_msg(f"Reading Nmap results from {input_file}", LogType.PROCESSING)
@@ -57,95 +60,123 @@ def run_red_fox_pentaist(target: str, out_dir, model='gemma3', is_docker=True):
         }),
         "80/tcp": ("HTTP 80", {
             "gobuster": lambda ip: run_gobuster(ip, is_docker),
-            # "nikto": lambda target: run_nikto(target),
+            "nikto":    lambda ip: run_nikto(ip, is_docker),
         }),
     }
 
-    html_ports_data = ''
-
+    html_report = ''
+    tool_output = ''
     for port, (service_name, tools) in port_scanners.items():
         if port in nmap_output or service_name.split()[0] in nmap_output:  
             log_msg(f"Port {port} open - {service_name} detected!", LogType.PORT, True)
 
-            # Run the tool
+                
+            # Run the tools
             for tool_name, tool_func in tools.items():
                 try:
                     log_msg(f"Running {tool_name}", LogType.COMMAND)
 
-                    output = tool_func(ip)
+                    
+                    tool_output = tool_func(ip)
 
-                    if output:
+                    if tool_output:
                         log_msg(f"{tool_name} ran successfully", LogType.SUCCESS)
 
-                        save_outputs(os.path.join(out_dir, tool_name), output)
-                        scan_ports_outputs[tool_name] = { 'port': port, 'output': output }
+                        save_outputs(os.path.join(out_dir, tool_name), tool_output)
+                        scan_ports_outputs[tool_name] = { 'port': port, 'output': tool_output }
                     else:
                         log_msg(f"{tool_name} did not return any result", LogType.WARNING)
+                        continue
 
                 except Exception as e:
                     log_msg(f"Error running {tool_name}: {e}", LogType.ERROR)
                 
                 
-                #################################################
-                # Check tool output
+                ################################################
+                # Check tools outputs     ######################
+                
+                # Gobuster #####################################
+                if not tool_output:
+                    continue
+
                 if tool_name == Tools.GOBUSTER.value:
-                    tool_data = fetch_gobuster_output(output)
+                    tool_data = fetch_gobuster_output(tool_output)
                     
                     if tool_data:
                         scan_ports_outputs[tool_name]
                         log_msg(f"Found interesting data", LogType.DATA)
-                        html_this_port_data = (
-                            create_report_subtitle(tool_name.upper())
-                            + create_report_paragraphe("Data need futher inquiry:")
+                       
+                        html_report = (
+                            create_report_title(port)
+                            + create_report_subtitle(tool_name.upper())
+                            + create_report_paragraphe("Check the following:")
                         )
+                        
                         data_items = ''
                         for d in tool_data:
                             log_msg(f"       -> {d}")
-                            data_items += create_report_list_item(d)
-                        html_ports_data =  create_report_section(
-                            html_this_port_data 
-                            + create_report_list(data_items))
-
+                            data_items += create_report_list_item(f'<code>{d}</code>')
                         
+                        html_report += create_report_list(data_items)
 
-
+                # Nikto #####################################
+                if tool_name == Tools.NIKTO.value:
+                    tool_data = fetch_nikto_output(tool_output)
+                  
+                    if tool_data:
+                        scan_ports_outputs[tool_name]
+                        log_msg(f"Found interesting data", LogType.DATA)
+                       
+                        html_report = (
+                            create_report_title(port)
+                            + create_report_subtitle(tool_name.upper())
+                            + create_report_paragraphe("Check the following:")
+                        )
+                        
+                        data_items = ''
+                        for d in tool_data:
+                            log_msg(f"       -> {d}")
+                            data_items += create_report_list_item(f'<code>{d}</code>')
+                        
+                        html_report += create_report_list(data_items)        
+            
             # Add analysis for the port
-            html_web_report = ''
             if '80' in port:
-                log_msg(f"Checking website pages codes", LogType.WEB, True)
+                log_msg(f"Checking website pages scripts", LogType.WEB, True)
 
                 web_pages_findings, web_api_findings = analyze_web_pages(f'http://{ip}')
 
                 if web_pages_findings:
                     log_msg(f"Found path(s), can be interesting:", LogType.WEB)
 
-                    html_web_report += create_report_title(f"Web page (port {port}) scan")
+                    html_report += create_report_title(f"Web page (port {port}) scan") + create_report_subtitle(f"Scripts found")
                     
-                    html_web_report += create_report_subtitle(f"Scripts found")
                     html_web_pages_findings = ''
                     for k, v in web_pages_findings.items():
                         log_msg(f'      => {k}')
-                        html_web_pages_findings += create_report_list_item(k)
-                    html_web_report += create_report_list(html_web_pages_findings)
+                        html_web_pages_findings += create_report_list_item(f'<code>{k}</code>')
+                    html_report += create_report_list(html_web_pages_findings)
 
                     html_api_findings = ''
                     if web_api_findings:
-                        html_web_report += create_report_subtitle(f"Found {len(web_api_findings)} api returns")
+                        html_report += create_report_subtitle(f"Found {len(web_api_findings)} api returns")
                         log_msg("Return from api call:", LogType.WEB)
                         for k, v in web_api_findings.items():
                             log_msg(f'  * {k}:\n        => {v}')
                             html_api_findings += create_report_list_item(f'{k}<br><code>{v}</code>')
 
-                        html_web_report += create_report_list(html_api_findings)
+                        html_report += create_report_list(html_api_findings)
 
-                    html_web_report = create_report_section(html_web_report)
                 else:
                     log_msg("Didn't found data to exploit", LogType.WEB)
-                
+
+            if html_report:
+                html_report = create_report_section(html_report)            
     
+
     ai_response = ''
     if model:
-        log_msg("Asking 🤖 AI  for guidance...", LogType.ANALYZE, True)
+        log_msg("Asking 🤖 A.I. 🤖  for guidance...", LogType.ANALYZE, True)
 
         prompt = (
             f"You are acting as an experienced penetration tester assisting in a live assessment.\n"
@@ -252,8 +283,7 @@ def run_red_fox_pentaist(target: str, out_dir, model='gemma3', is_docker=True):
     report = (
         html_start('RedFox Pentest Report') 
         + generate_pentest_intro(ip)
-        + html_ports_data
-        + html_web_report 
+        + html_report 
         + ai_response
         + html_end()
     )

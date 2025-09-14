@@ -128,7 +128,10 @@ def html_start(title):
             <div class="container">
                 <div class="content-left">
     """
-    html += f"<h1>{title}</h1><br>"
+    html += f'''<div style="max-width: 700px;">
+                    <img src="../../dev/assets/redfox_main.png" alt="RedFox Icon" style="width: 100%; height: 450px;border-radius:15px;">
+                </div><br><h1>{title}</h1>
+            '''
     return html
 
 
@@ -190,13 +193,14 @@ def generate_pentest_intro(ip):
     return f"""
         <p>
         This report summarizes the findings of an authorized penetration test performed on 
-        the target system - {ip}.<br>
+        the target system - <code>{ip}</code>.<br>
         The objective was to identify vulnerabilities, assess their potential impact, 
         and provide recommendations to strengthen overall security.<br>
         All activities were conducted in a controlled environment with prior authorization, 
         following industry best practices.
         </p>
     """
+
 def generate_pe_table(pe_result):
     html = """
     <div class=card>
